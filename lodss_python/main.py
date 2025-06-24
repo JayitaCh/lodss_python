@@ -1,6 +1,5 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import urllib.parse
 
 st.set_page_config(layout="wide")
 st.markdown(
@@ -29,22 +28,15 @@ with open("sketch.html", "r") as f:
     html_code = f.read()
 
 # Planet options (same as in CSV)
-planet_names = ["Earth", "Mars", "Venus"]
+planet_names = ["Mercury","Venus","Earth", "Mars","Jupiter","Saturn","Uranus","Neptune" ]
 
 st.title("🪐 Choose a Planet")
 selected_planet = st.selectbox("Select a planet to render:", [""] + planet_names)
 
 if selected_planet:
-    st.markdown(f"**You selected:** {selected_planet}")
+    with open("sketch.html", "r") as f:
+        html_code = f.read()
     
-    # Encode planet name into URL
-    query = urllib.parse.urlencode({"planet": selected_planet})
-    sketch_url = f"sketch.html?{query}"
+    html_code = html_code.replace("{{PLANET_NAME}}", selected_planet)
 
-    # Display p5.js sketch
-    st.components.v1.html(
-        f'<iframe src="{sketch_url}" width="650" height="650"></iframe>',
-        height=670
-    )
-
-components.html(html_code, height=1220)
+    st.components.v1.html(html_code, height=670, scrolling=True)

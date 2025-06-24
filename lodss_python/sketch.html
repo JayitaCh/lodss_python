@@ -16,8 +16,8 @@
     </script>
     
     <script>
-    let planets = [];
-    let clickedInfo = "";  // Stores clicked planet info for display
+    let allPlanets = [];
+    let selectedPlanet = null;
 
     function parseCSV(data) {
         const lines = data.trim().split("\n");
@@ -26,8 +26,8 @@
         for (let i = 1; i < lines.length; i++) {
             const row = lines[i].split(",");
 
-            planets.push({
-            name: row[0],
+            allPlanets.push({
+            name: row[0].trim(),
             colour: [int(row[1]), int(row[2]), int(row[3])],
             size: int(row[4]),
             orbit: int(row[5]),
@@ -41,62 +41,44 @@
     }
 
     function setup() {
-        createCanvas(2000, 600);
+        createCanvas(600, 600);
         angleMode(RADIANS);
         const csv = document.getElementById("planetsData").textContent;
         parseCSV(csv);
+
+        const planetName = "{{PLANET_NAME}}";
+
+        console.log(planetName);
+        if (planetName) {
+            selectedPlanet = allPlanets.find(p => p.name === planetName);
+            console.log(allPlanets);
+        }
     }
 
     function draw() {
         background(0);
         translate(width / 2, height / 2);
 
-        // Draw the sun
+        // Sun
         noStroke();
         fill(255, 255, 0);
         ellipse(0, 0, 100, 100);
 
-        // Draw orbits
-        noFill();
-        stroke(255);
-        planets.forEach((p) => {
-            ellipse(0, 0, p.orbit * 2, p.orbit * 2);
-        });
+        if (selectedPlanet) {
+            // Orbit
+            noFill();
+            stroke(255);
+            ellipse(0, 0, selectedPlanet.orbit * 2, selectedPlanet.orbit * 2);
 
-        // Draw and position planets
-        planets.forEach((p) => {
-            p.angle = frameCount * p.speed;
-            p.x = p.orbit * cos(p.angle);
-            p.y = p.orbit * sin(p.angle);
+            // Planet
+            selectedPlanet.angle = frameCount * selectedPlanet.speed;
+            selectedPlanet.x = selectedPlanet.orbit * cos(selectedPlanet.angle);
+            selectedPlanet.y = selectedPlanet.orbit * sin(selectedPlanet.angle);
 
-            fill(p.colour[0], p.colour[1], p.colour[2]);
+            fill(...selectedPlanet.colour);
             noStroke();
-            ellipse(p.x, p.y, p.size, p.size);
-        });
-
-        // Show clicked info if any
-        if (clickedInfo !== "") {
-            fill(255);
-            textSize(20);
-            textAlign(CENTER);
-            text(clickedInfo, 0, height / 2 - 20);  // Display at bottom
+            ellipse(selectedPlanet.x, selectedPlanet.y, selectedPlanet.size, selectedPlanet.size);
         }
-    }
-
-    function mousePressed() {
-        // Translate mouse coordinates relative to center
-        let mx = mouseX - width / 2;
-        let my = mouseY - height / 2;
-
-        for (let p of planets) {
-            let d = dist(mx, my, p.x, p.y);
-            if (d < p.size / 2) {
-            clickedInfo = `${p.name}: ${p.info}`;
-            console.log(clickedInfo);
-            return;
-            }
-        }
-        clickedInfo = "";  // Clear if no match
     }
     </script>
   </body>
