@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  </head>
+  <body>
+    <script id="planetsData" type="text/csv">
+        planet,colour_r,colour_g,colour_b,size,orbit,speed,info
+        Mercury,165,42,42,15,150,1,The smallest and fastest planet.
+        Venus,255,190,200,30,200,0.75,The hottest planet in the Solar System. Water would turn to steam and some metals would melt just by being there!
+        Earth,104,149,197,35,300,0.5,You are here — the only planet we know of that can support life.
+        Mars,223,30,38,15,400,0.25,Home of Olympus Mons — the highest mountain in the Solar System.
+        Jupiter,148,26,28,60,500,0.2,The largest planet in the Solar System but with the shortest day — a little under ten hours.
+        Saturn,241,169,78,50,600,0.1,Saturn's rings are wide enough to fit almost 10 Earths side-by-side. But they're only around 10 metres high!
+        Uranus,214,236,239,40,700,0.05,The coldest planet in the Solar System and the first discovered after the telescope was invented.
+        Neptune,0,105,148,40,800,0.025,The farthest planet from the Sun. Neptune's day is only 16 hours — but its year is 165 Earth years!
+    </script>
+    
+    <script>
+    let planets = [];
+    let clickedInfo = "";  // Stores clicked planet info for display
+
+    function parseCSV(data) {
+        const lines = data.trim().split("\n");
+        const headers = lines[0].split(",");
+
+        for (let i = 1; i < lines.length; i++) {
+            const row = lines[i].split(",");
+
+            planets.push({
+            name: row[0],
+            colour: [int(row[1]), int(row[2]), int(row[3])],
+            size: int(row[4]),
+            orbit: int(row[5]),
+            speed: float(row[6]/200),
+            info: row[7],
+            angle: 0,
+            x: 0,
+            y: 0
+            });
+        }
+    }
+
+    function setup() {
+        createCanvas(2000, 600);
+        angleMode(RADIANS);
+        const csv = document.getElementById("planetsData").textContent;
+        parseCSV(csv);
+    }
+
+    function draw() {
+        background(0);
+        translate(width / 2, height / 2);
+
+        // Draw the sun
+        noStroke();
+        fill(255, 255, 0);
+        ellipse(0, 0, 100, 100);
+
+        // Draw orbits
+        noFill();
+        stroke(255);
+        planets.forEach((p) => {
+            ellipse(0, 0, p.orbit * 2, p.orbit * 2);
+        });
+
+        // Draw and position planets
+        planets.forEach((p) => {
+            p.angle = frameCount * p.speed;
+            p.x = p.orbit * cos(p.angle);
+            p.y = p.orbit * sin(p.angle);
+
+            fill(p.colour[0], p.colour[1], p.colour[2]);
+            noStroke();
+            ellipse(p.x, p.y, p.size, p.size);
+        });
+
+        // Show clicked info if any
+        if (clickedInfo !== "") {
+            fill(255);
+            textSize(20);
+            textAlign(CENTER);
+            text(clickedInfo, 0, height / 2 - 20);  // Display at bottom
+        }
+    }
+
+    function mousePressed() {
+        // Translate mouse coordinates relative to center
+        let mx = mouseX - width / 2;
+        let my = mouseY - height / 2;
+
+        for (let p of planets) {
+            let d = dist(mx, my, p.x, p.y);
+            if (d < p.size / 2) {
+            clickedInfo = `${p.name}: ${p.info}`;
+            console.log(clickedInfo);
+            return;
+            }
+        }
+        clickedInfo = "";  // Clear if no match
+    }
+    </script>
+  </body>
+</html>
