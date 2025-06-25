@@ -37,7 +37,7 @@ st.video("https://www.youtube.com/watch?v=sD1-rS_TM2o")
 planet_names = ["Mercury","Venus","Earth", "Mars","Jupiter","Saturn","Uranus","Neptune" ]
 
 st.title("🪐 Choose a Planet")
-selected_planet = st.selectbox("Select a planet to render:", [""] + planet_names)
+selected_planet = st.selectbox("Select a planet to render:", ["None"] + planet_names)
 
 if selected_planet:
     selected_index = planet_names.index(selected_planet)
@@ -56,7 +56,6 @@ st.markdown("""
 print("Your Name")            
 """)
 
-# code = st.text_area("Enter Python code here:", height=70)
 st.markdown("""### Enter Python code here:""")
 code = st.text_area("Type whatever you see in the box above",height=70)
 
