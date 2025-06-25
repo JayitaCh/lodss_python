@@ -37,7 +37,7 @@ st.video("https://www.youtube.com/watch?v=sD1-rS_TM2o")
 planet_names = ["Mercury","Venus","Earth", "Mars","Jupiter","Saturn","Uranus","Neptune" ]
 
 st.title("🪐 Choose a Planet")
-selected_planet = st.selectbox("Select a planet to render:", ["None"] + planet_names)
+selected_planet = st.selectbox("Select a planet to render:", [""] + planet_names)
 
 if selected_planet:
     selected_index = planet_names.index(selected_planet)
