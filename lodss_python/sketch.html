@@ -1,9 +1,25 @@
 <html>
   <head>
-    
+    <style>
+      /* CSS Styling for centering the Canvas content */
+      body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* full height */
+        background: #fff; /* optional */
+      }
+      canvas {
+        display: block;
+        margin: auto;
+      }
+    </style>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
   </head>
   <body>
+    
     <script id="planetsData" type="text/csv">
         planet,colour_r,colour_g,colour_b,size,orbit,speed,info
         Mercury,165,42,42,15,150,1,The smallest and fastest planet.
@@ -17,7 +33,6 @@
     </script>
     
     <script>
-    
     let allPlanets = [];
     let clickedInfo = "";
     let selectedPlanet = null;
@@ -44,7 +59,7 @@
     }
 
     function setup() {
-        createCanvas(2000, 600);
+        createCanvas(2000, 800);
         
         angleMode(RADIANS);
         const csv = document.getElementById("planetsData").textContent;
@@ -73,12 +88,12 @@
                 // Orbit
                 noFill();
                 stroke(255, 255);
-                ellipse(0, 0, planet.orbit * 2, planet.orbit * 2);
+                ellipse(0, 0, planet.orbit * 1.5, planet.orbit * 1.5);
 
                 // Animate
                 planet.angle = frameCount * planet.speed;
-                planet.x = planet.orbit * cos(planet.angle);
-                planet.y = planet.orbit * sin(planet.angle);
+                planet.x = planet.orbit * cos(planet.angle) * 0.75;
+                planet.y = planet.orbit * sin(planet.angle) * 0.75;
 
                 // Draw planet
                 fill(...planet.colour);
@@ -86,7 +101,19 @@
                 ellipse(planet.x, planet.y, planet.size, planet.size);
 
                 // Show clicked info if any
-                if (clickedInfo !== "") {
+                if (clickedInfo !== "") { 
+                    let padding = 10;
+                    let txtSize = 20;
+                    let txtWidth = textWidth(clickedInfo);
+                    let rectWidth = txtWidth + padding * 2;
+                    let rectHeight = txtSize + padding * 1.5;
+                    
+                    // Draw background
+                    fill(0, 0, 0, 180); // semi-transparent black
+                    rectMode(CENTER);
+                    rect(0, (height / 2 - 20) - rectHeight / 2 + 5, rectWidth, rectHeight, 10);
+                    
+                    // Draw text
                     fill(255);
                     textSize(20);
                     textAlign(CENTER);
@@ -111,5 +138,6 @@
         clickedInfo = "";  // Clear if no match
       }
     </script>
+        
   </body>
 </html>
