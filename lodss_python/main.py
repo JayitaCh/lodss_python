@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 import io
 import contextlib
 import random
+import time
 
 # Setting the layout
 st.set_page_config(layout="wide")
@@ -28,9 +29,55 @@ st.markdown(
 st.sidebar.write("")
 
 # Intro - title and video embedding
-st.title("✨ Welcome to the LODSS!")
+st.title("✨ Welcome to the LODSS Space Mission!")
 st.text("Add some text")
-st.video("https://www.youtube.com/watch?v=sD1-rS_TM2o")
+# st.video("https://www.youtube.com/watch?v=sD1-rS_TM2o")
+
+# Trimming video to the desired time
+video_id = "sD1-rS_TM2o"
+
+start = 45
+start_param = f"&start={start}" if start else ""
+
+end = 153
+end_param = f"&end={end}" if end else ""
+
+youtube_embed = f"https://www.youtube.com/embed/{video_id}?autoplay=1&rel=0{start_param}{end_param}"
+
+# Reload video if button is pressed
+if st.button("👀 Watch the video again!"):
+    reload_token = f"&t={int(time.time())}"
+    youtube_embed += reload_token
+
+components.html(
+            f"""
+            <style>
+                .video-container {{
+                    position: relative;
+                    padding-bottom: 56.25%; /* 16:9 */
+                    padding-top: 25px;
+                    height: 0;
+                }}
+                .video-container iframe {{
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    border-radius: 12px;
+                }}
+            </style>
+            <div class="video-container">
+                <iframe
+                    src="{youtube_embed}"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            """,
+            height=800,
+        )
 
 ##### Playing around with the solar system 
 
@@ -38,9 +85,9 @@ st.video("https://www.youtube.com/watch?v=sD1-rS_TM2o")
 planet_names = ["Mercury","Venus","Earth", "Mars","Jupiter","Saturn","Uranus","Neptune" ]
 
 st.title("🪐 Choose a Planet")
-selected_planet = st.selectbox("Select a planet to render:", [""] + planet_names)
+selected_planet = st.selectbox("Select a planet to render:", ["Build the Solar System..."] + planet_names)
 
-if selected_planet:
+if selected_planet != "Build the Solar System...":
     selected_index = planet_names.index(selected_planet)
     selected_planets = planet_names[:selected_index + 1]
 
@@ -49,7 +96,7 @@ if selected_planet:
     
     html_code = html_code.replace("{{PLANET_NAME}}", ",".join(selected_planets))
 
-    components.html(html_code, height=670, scrolling=True)
+    components.html(html_code, height=800, scrolling=False)
 
 ##### ENHANCED INTERACTIVE SECTION
 
