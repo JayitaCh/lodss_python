@@ -91,7 +91,7 @@ if selected_planet != "Build the Solar System...":
     selected_index = planet_names.index(selected_planet)
     selected_planets = planet_names[:selected_index + 1]
 
-    with open("sketch.html", "r") as f:
+    with open("lodss_python/sketch.html", "r") as f:
         html_code = f.read()
     
     html_code = html_code.replace("{{PLANET_NAME}}", ",".join(selected_planets))
